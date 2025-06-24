@@ -8,6 +8,8 @@ class AsciiCharacters:
     default = " "
     vertical = "|"
     horizontal = "─"
+    diagonal_bl_tr = "/"
+    diagonal_br_tl = '\\'
 
 class AsciiMapping:
     def __init__(self, edges, image_size):
@@ -34,9 +36,12 @@ class AsciiMapping:
             if len(neighbors) == 2 or len(neighbors) == 1:
                 if (0,1) in neighbors or (0,-1) in neighbors:
                     image[coord[1]][coord[0]] = AsciiCharacters.vertical
-                if (1,0) in neighbors or (-1, 0) in neighbors:
+                elif (1,0) in neighbors or (-1, 0) in neighbors:
                     image[coord[1]][coord[0]] = AsciiCharacters.horizontal
-
+                elif (-1,-1) in neighbors and (1,1) in neighbors:
+                    image[coord[1]][coord[0]] = AsciiCharacters.diagonal_bl_tr
+                elif (1,-1) in neighbors and (-1,1) in neighbors:
+                    image[coord[1]][coord[0]] = AsciiCharacters.diagonal_br_tl
         return image
     
     def print(self):
