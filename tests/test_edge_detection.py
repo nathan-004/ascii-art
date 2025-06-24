@@ -19,7 +19,7 @@ class TestGetEdges(unittest.TestCase):
         result = get_edges('fake_path.jpg', threshold1=50, threshold2=150)
 
         # Assert
-        mock_imread.assert_called_once_with('assets/sample.jpg', 0)
+        mock_imread.assert_called_once_with('fake_path.jpg', 0)
         mock_canny.assert_called_once_with(fake_img, 50, 150)
         np.testing.assert_array_equal(result, fake_edges)
 
