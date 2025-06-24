@@ -20,7 +20,7 @@ def get_edges(image_path, threshold1=100, threshold2=200, display=False):
     edges:Objet Numpy Array
         Image en niveaux de gris (255 = contour, 200 = autre)
     """
-    img = cv.imread('assets/sample.jpg', cv.IMREAD_GRAYSCALE)
+    img = cv.imread(image_path, cv.IMREAD_GRAYSCALE)
     assert img is not None, f"{image_path} inexistant."
     edges = cv.Canny(img, threshold1, threshold2) # Numpy Array 
 
@@ -56,12 +56,13 @@ def get_edges_directions(image_path=None, edges=None):
     def get_direction(x,y):
         """Retourne la liste des pixels voisins qui sont des contours"""
         neighbors = []
-        for y_modif in range(-1, 1, 1):
-            for x_modif in range(-1, 1, 1):
-                if y_modif == x_modif == 0:
+        for y_modif in range(-1, 2, 1):
+            for x_modif in range(-1, 2, 1):
+                if y_modif == 0 and x_modif == 0:
                     continue
-                if edges[y+y_modif][x+x_modif] > 0:
-                    neighbors.append((y_modif, x_modif))
+                if 0 <= y + y_modif < edges.shape[0] and 0 <= x + x_modif < edges.shape[1]:
+                    if edges[y + y_modif][x + x_modif] > 0:
+                        neighbors.append((y_modif, x_modif))
         return neighbors
     
     pixels = []
