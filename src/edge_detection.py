@@ -31,7 +31,7 @@ def get_edges(image_path, threshold1=100, threshold2=200, display=False):
         plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
         
         plt.show()
-    
+    print(len(edges[0]), len(edges))
     return edges
 
 def get_edges_directions(image_path=None, edges=None):
