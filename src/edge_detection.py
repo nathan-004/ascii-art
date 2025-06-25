@@ -4,7 +4,25 @@ import numpy as np
 
 # https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html
 
-def get_edges(image_path, threshold1=100, threshold2=200, display=False):
+def resize_with_aspect_ratio(image, width=None, height=None):
+    # Get the original image dimensions
+    h, w = image.shape[:2]
+
+    # Calculate the aspect ratio
+    aspect_ratio = w / h
+
+    if width is None:
+        # Calculate height based on the specified width
+        new_height = int(height / aspect_ratio)
+        resized_image = cv.resize(image, (height, new_height))
+    else:
+        # Calculate width based on the specified height
+        new_width = int(width * aspect_ratio)
+        resized_image = cv.resize(image, (new_width, width))
+
+    return resized_image
+
+def get_edges(image_path, threshold1=100, threshold2=200, resize_width=None, resize_height=None, display=False):
     """
     Utilise la méthode Canny d'Opencv pour détecter les contours
     
@@ -22,6 +40,8 @@ def get_edges(image_path, threshold1=100, threshold2=200, display=False):
     """
     img = cv.imread(image_path, cv.IMREAD_GRAYSCALE)
     assert img is not None, f"{image_path} inexistant."
+    if resize_width is not None or resize_height is not None:
+        img = resize_with_aspect_ratio(img, width=resize_width, height=resize_height)
     edges = cv.Canny(img, threshold1, threshold2) # Numpy Array 
 
     if display:
