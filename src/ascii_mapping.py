@@ -1,7 +1,8 @@
 # Déterminer quelles caractères ASCII utiliser #
 # -------------------------------------------- #
+import cv2 as cv
 
-from edge_detection import get_edges_directions, get_edges
+from edge_detection import get_edges_directions, get_edges, resize_with_aspect_ratio
 
 class AsciiCharacters:
     """Caractères ascii pour chaque croisements"""
@@ -13,6 +14,14 @@ class AsciiCharacters:
 
     # Coins
     corner_bl = "└"
+
+    ascii_chars = [' ', '.', '\'', '`', '^', '"', ',', ':', ';', '!', '~',
+                '-', '_', '+', '<', '>', 'i', 'l', '?', '1', '(', ')',
+                '[', ']', '{', '}', '/', '\\', '|', 't', 'f', 'j', 'r',
+                'x', 'n', 'u', 'v', 'c', 'z', 'X', 'Y', 'U', 'J', 'C',
+                'L', 'Q', '0', 'O', 'Z', 'm', 'w', 'q', 'p', 'd', 'b',
+                'k', 'h', 'a', 'o', '*', '#', 'M', 'W', '&', '8', '%',
+                'B', '@', '$']
 
 class bcolors:
     BLACK = '\033[30m'
@@ -73,6 +82,17 @@ class AsciiMapping:
                 image[coord[1]][coord[0]] = AsciiCharacters.diagonal_br_tl
         return image
     
+    def fill(self, image_path, resize_width=None, resize_height=None):
+        """Utiliser des caractères pour simuler si un pixel est sombre ou pas"""
+        img = cv.imread(image_path, cv.IMREAD_GRAYSCALE)
+        if resize_width is not None or resize_height is not None:
+            img = resize_with_aspect_ratio(img, width=resize_width, height=resize_height)
+
+        for y, line in enumerate(self.ascii_result):
+            for x, ascii_pixel in enumerate(line):
+                if ascii_pixel == ' ':
+                    self.ascii_result[y][x] = AsciiCharacters.ascii_chars[int(img[y][x] / 255 * (len(AsciiCharacters.ascii_chars) - 1))]
+
     def print(self):
         """Print the ascii image in the terminal"""
         result = ""
@@ -84,7 +104,10 @@ class AsciiMapping:
         with open("result.txt", "w", encoding="utf-8") as f:
             f.write(result)
 
-edges_img = get_edges("assets/sample.jpg", threshold1=100, threshold2=200, resize_width=200, display=True)
+img_path = "assets/sample2.jpg"
+
+edges_img = get_edges(img_path, threshold1=100, threshold2=200, resize_width=750, display=True)
 edges = get_edges_directions(edges=edges_img)
 ascii = AsciiMapping(edges, (edges_img.shape[:2]))
+ascii.fill(img_path, resize_width=750)
 ascii.print()
