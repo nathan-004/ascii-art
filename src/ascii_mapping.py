@@ -50,7 +50,7 @@ class bcolors:
     HIDDEN = '\033[8m'
 
 class AsciiMapping:
-    def __init__(self, edges, image_size):
+    def __init__(self, edges, image_size, ascii_chars_n = None):
         """
         Parameters
         ----------
@@ -58,14 +58,17 @@ class AsciiMapping:
             Liste sous forme [(x,y), [(x_voisin, y_voisin)]]
         image_size:tuple
             (largeur, longueur)
+        ascii_chars_n:int
+            Nombre de charactères ascii utilisé
         """
         self.width = image_size[1]
         self.height = image_size[0]
+        self.ascii_chars_n = ascii_chars_n if not ascii_chars_n  is None and ascii_chars_n <= len(AsciiCharacters.ascii_chars)  else len(AsciiCharacters.ascii_chars)
         self.ascii_result = self.generate(edges)
     
     def generate(self, edges):
         """Créé une image consituée de texte à partir des contours"""
-        
+        AsciiCharacters.ascii_chars = AsciiCharacters.ascii_chars[:self.ascii_chars_n]
         image = [[AsciiCharacters.default for x in range(self.width)] for y in range(self.height)]
 
         for pixel in edges:
@@ -108,6 +111,6 @@ img_path = "assets/sample2.jpg"
 
 edges_img = get_edges(img_path, threshold1=100, threshold2=200, resize_width=750, display=True)
 edges = get_edges_directions(edges=edges_img)
-ascii = AsciiMapping(edges, (edges_img.shape[:2]))
+ascii = AsciiMapping(edges, (edges_img.shape[:2]), 7)
 ascii.fill(img_path, resize_width=750)
 ascii.print()
