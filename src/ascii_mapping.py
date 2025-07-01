@@ -15,7 +15,7 @@ class AsciiCharacters:
     # Coins
     corner_bl = "└"
 
-    ascii_chars = [' ', '.', '\'', '`', '^', '"', ',', ':', ';', '!', '~',
+    ascii_chars = [" ", '.', '`', '^', '"', ',', ':', ';', '!', '~',
                 '-', '_', '+', '<', '>', 'i', 'l', '?', '1', '(', ')',
                 '[', ']', '{', '}', '/', '\\', '|', 't', 'f', 'j', 'r',
                 'x', 'n', 'u', 'v', 'c', 'z', 'X', 'Y', 'U', 'J', 'C',
@@ -107,10 +107,9 @@ class AsciiMapping:
         with open("result.txt", "w", encoding="utf-8") as f:
             f.write(result)
 
-img_path = "assets/sample2.jpg"
+img_path = "assets/sample4.jpg"
 
 edges_img = get_edges(img_path, threshold1=100, threshold2=200, resize_width=750, display=True)
 edges = get_edges_directions(edges=edges_img)
 ascii = AsciiMapping(edges, (edges_img.shape[:2]), 7)
-ascii.fill(img_path, resize_width=750)
 ascii.print()
